@@ -43,7 +43,7 @@ function App() {
   };
 
   const handleDelete = (id) => {
-    fetch(`${API_URL}/todos`, {
+    fetch(`${API_URL}/todos/${id}`, {
       method: "DELETE",
     }).then(() => {
       setTasks((prev) => prev.filter((task) => task.id !== id));
@@ -62,7 +62,7 @@ function App() {
       [field]: value,
     };
 
-    fetch(`http://localhost:5000/todos/${id}`, {
+    fetch(`${API_URL}/todos/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updated),
@@ -71,6 +71,30 @@ function App() {
         prev.map((t) => (t.id === id ? { ...t, [field]: value } : t))
       );
     });
+  };
+
+  //  Handle completed checkbox toggle
+  const handleCompletedChange = (id, completed) => {
+    const taskToUpdate = tasks.find((t) => t.id === id);
+    if (!taskToUpdate) return;
+
+    const updatedTask = {
+      ...taskToUpdate,
+      completed,
+    };
+
+    fetch(`${API_URL}/todos/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedTask),
+    })
+      .then((res) => res.json())
+      .then((updatedTodo) => {
+        setTasks((prev) => prev.map((t) => (t.id === id ? updatedTodo : t)));
+      })
+      .catch((err) => {
+        console.error("Failed to update completed status:", err);
+      });
   };
 
   const toggleDetails = (id) => {
@@ -92,7 +116,13 @@ function App() {
           <li key={task.id} className="task-item">
             <div className="task-header" onClick={() => toggleDetails(task.id)}>
               <label>
-                <input type="checkbox" defaultChecked={task.completed} />
+                <input
+                  type="checkbox"
+                  checked={task.completed}
+                  onChange={(e) =>
+                    handleCompletedChange(task.id, e.target.checked)
+                  }
+                />
                 <span>{task.text}</span>
               </label>
             </div>
@@ -144,7 +174,7 @@ function App() {
                   <button
                     className="btn-delete"
                     onClick={(e) => {
-                      e.stopPropagation(); // Prevent collapse on delete
+                      e.stopPropagation();
                       handleDelete(task.id);
                     }}
                   >
