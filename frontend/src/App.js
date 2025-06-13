@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./styles.css";
-const API_URL = "http://localhost:5000/todos";
+const API_URL =
+  "https://c3bb-2409-408c-bec2-29bb-4207-389b-14a-f3ef.ngrok-free.app/todos";
 
 function App() {
   const [task, setTask] = useState("");
