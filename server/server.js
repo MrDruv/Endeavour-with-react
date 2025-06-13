@@ -7,7 +7,7 @@ const PORT = 5000;
 
 // CORS options to allow only your GitHub Pages frontend
 const corsOptions = {
-  origin: "https://mrdruv.github.io/Endeavour-with-react/",
+  origin: "https://mrdruv.github.io",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   optionsSuccessStatus: 200, // For legacy browsers
