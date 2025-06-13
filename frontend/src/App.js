@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import "./styles.css";
+const API_URL =
+  "https://cc11-2409-408c-bec2-29bb-4207-389b-14a-f3ef.ngrok-free.app";
 
 function App() {
   const [task, setTask] = useState("");
@@ -8,7 +10,7 @@ function App() {
   const [editFields, setEditFields] = useState({});
 
   useEffect(() => {
-    fetch("http://localhost:5000/todos")
+    fetch(`${API_URL}/todos`)
       .then((res) => res.json())
       .then((data) => {
         setTasks(data);
@@ -25,7 +27,7 @@ function App() {
 
   const handleAddTask = () => {
     if (!task.trim()) return;
-    fetch("http://localhost:5000/todos", {
+    fetch(`${API_URL}/todos`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text: task }),
@@ -42,7 +44,7 @@ function App() {
   };
 
   const handleDelete = (id) => {
-    fetch(`http://localhost:5000/todos/${id}`, {
+    fetch(`${API_URL}/todos`, {
       method: "DELETE",
     }).then(() => {
       setTasks((prev) => prev.filter((task) => task.id !== id));
