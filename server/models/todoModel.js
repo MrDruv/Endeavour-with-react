@@ -1,32 +1,37 @@
 const pool = require("../db");
 
-function getAllTodos(callback) {
-  pool.query("SELECT * FROM todo ORDER BY id", callback);
-}
+// Get all todos
+const getAllTodos = async () => {
+  const result = await pool.query("SELECT * FROM todo ORDER BY id");
+  return result.rows;
+};
 
-function addTodo({ text, completed, due_date, notes }, callback) {
-  pool.query(
+// Create a new todo
+const createTodo = async (text, completed, due_date, notes) => {
+  const result = await pool.query(
     "INSERT INTO todo (text, completed, due_date, notes) VALUES ($1, $2, $3, $4) RETURNING *",
-    [text, completed, due_date, notes],
-    callback
+    [text, completed, due_date, notes]
   );
-}
+  return result.rows[0];
+};
 
-function updateTodo(id, { text, completed, due_date, notes }, callback) {
-  pool.query(
+// Update todo by ID
+const updateTodoById = async (id, text, completed, due_date, notes) => {
+  const result = await pool.query(
     "UPDATE todo SET text = $1, completed = $2, due_date = $3, notes = $4 WHERE id = $5 RETURNING *",
-    [text, completed, due_date, notes, id],
-    callback
+    [text, completed, due_date, notes, id]
   );
-}
+  return result.rows;
+};
 
-function deleteTodo(id, callback) {
-  pool.query("DELETE FROM todo WHERE id = $1", [id], callback);
-}
+// Delete todo by ID
+const deleteTodoById = async (id) => {
+  return await pool.query("DELETE FROM todo WHERE id = $1", [id]);
+};
 
 module.exports = {
   getAllTodos,
-  addTodo,
-  updateTodo,
-  deleteTodo,
+  createTodo,
+  updateTodoById,
+  deleteTodoById,
 };
