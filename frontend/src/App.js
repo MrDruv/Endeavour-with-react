@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./styles.css";
-const API_URL = "https://debian.pirate-burbot.ts.net/todos";
+const API_URL = "http://localhost:5000/todos";
 
 function App() {
   const [task, setTask] = useState("");
