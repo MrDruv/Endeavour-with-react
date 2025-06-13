@@ -17,8 +17,6 @@ services:
   backend:
     build: .
     command: node server.js
-    volumes:
-      - .:/app
     ports:
       - "5000:5000"
     depends_on:

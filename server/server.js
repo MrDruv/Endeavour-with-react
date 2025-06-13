@@ -1,29 +1,22 @@
-const http = require("http");
-const url = require("url");
-const routeHandler = require("./routes/todoRoutes");
+const express = require("express");
+const cors = require("cors");
+const todoRoutes = require("./routes/todoRoutes");
 
-const server = http.createServer((req, res) => {
-  const parsedUrl = url.parse(req.url, true);
-  const path = parsedUrl.pathname;
+const app = express();
+const PORT = 5000;
 
-  res.setHeader("Content-Type", "application/json");
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
-  );
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+// Middleware
+app.use(cors());
+app.use(express.json()); // Parses JSON body
 
-  if (req.method === "OPTIONS") {
-    res.statusCode = 200;
-    res.end();
-    return;
-  }
+// Routes
+app.use("/todos", todoRoutes);
 
-  routeHandler(req, res, path);
+// 404 handler for unknown routes
+app.use((req, res) => {
+  res.status(404).json({ error: "Not Found" });
 });
 
-const PORT = 5000;
-server.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
