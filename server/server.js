@@ -5,8 +5,15 @@ const todoRoutes = require("./routes/todoRoutes");
 const app = express();
 const PORT = 5000;
 
-// Middleware
-app.use(cors());
+// CORS options to allow only your GitHub Pages frontend
+const corsOptions = {
+  origin: "https://mrdruv.github.io/Endeavour-with-react/",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 200, // For legacy browsers
+};
+
+app.use(cors(corsOptions));
 app.use(express.json()); // Parses JSON body
 
 // Routes

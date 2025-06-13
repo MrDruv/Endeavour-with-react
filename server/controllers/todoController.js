@@ -1,83 +1,68 @@
 const todoModel = require("../models/todoModel");
-const pool = require("../db");
 
-function handleGetTodos(res) {
-  todoModel.getAllTodos((err, result) => {
-    res.statusCode = err ? 500 : 200;
-    res.end(JSON.stringify(err ? { error: err.message } : result.rows));
-  });
-}
+const getTodos = async (req, res) => {
+  try {
+    const todos = await todoModel.getAllTodos();
+    res.status(200).json(todos);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
-function handlePostTodos(req, res) {
-  let postBody = "";
-  req.on("data", (chunk) => (postBody += chunk.toString()));
-  req.on("end", () => {
-    try {
-      const {
-        text,
-        completed = false,
-        due_date = "",
-        notes = "",
-      } = JSON.parse(postBody);
-      const formattedDueDate = due_date === "" ? null : due_date;
+const createTodo = async (req, res) => {
+  try {
+    const { text, completed = false, due_date = "", notes = "" } = req.body;
+    if (!text) return res.status(400).json({ error: "Task text is required" });
 
-      todoModel.addTodo(
-        { text, completed, due_date: formattedDueDate, notes },
-        (err, result) => {
-          res.statusCode = err ? 500 : 201;
-          res.end(
-            JSON.stringify(err ? { error: err.message } : result.rows[0])
-          );
-        }
-      );
-    } catch {
-      res.statusCode = 400;
-      res.end(JSON.stringify({ error: "Invalid JSON" }));
-    }
-  });
-}
+    const newTodo = await todoModel.createTodo({
+      text,
+      completed,
+      due_date,
+      notes,
+    });
 
-function handleUpdateTodo(req, res, id) {
-  let putBody = "";
-  req.on("data", (chunk) => (putBody += chunk.toString()));
-  req.on("end", () => {
-    try {
-      const { text, completed, due_date, notes } = JSON.parse(putBody);
-      const formattedDueDate = due_date === "" ? null : due_date;
+    res.status(201).json(newTodo);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
-      todoModel.updateTodo(
-        id,
-        { text, completed, due_date: formattedDueDate, notes },
-        (err, result) => {
-          res.statusCode = err ? 500 : result.rows.length ? 200 : 404;
-          res.end(
-            JSON.stringify(
-              err
-                ? { error: err.message }
-                : result.rows.length
-                ? result.rows[0]
-                : { error: "Todo Not Found" }
-            )
-          );
-        }
-      );
-    } catch {
-      res.statusCode = 400;
-      res.end(JSON.stringify({ error: "Invalid JSON" }));
-    }
-  });
-}
+const updateTodo = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: "Invalid Todo ID" });
 
-function handleDeleteTodo(res, id) {
-  todoModel.deleteTodo(id, (err) => {
-    res.statusCode = err ? 500 : 204;
-    res.end(err ? JSON.stringify({ error: err.message }) : "");
-  });
-}
+    const { text, completed, due_date, notes } = req.body;
+    const updatedTodo = await todoModel.updateTodo(id, {
+      text,
+      completed,
+      due_date,
+      notes,
+    });
+
+    if (!updatedTodo) return res.status(404).json({ error: "Todo Not Found" });
+
+    res.status(200).json(updatedTodo);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const deleteTodo = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: "Invalid Todo ID" });
+
+    await todoModel.deleteTodo(id);
+    res.status(204).end();
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
 module.exports = {
-  handleGetTodos,
-  handlePostTodos,
-  handleUpdateTodo,
-  handleDeleteTodo,
+  getTodos,
+  createTodo,
+  updateTodo,
+  deleteTodo,
 };

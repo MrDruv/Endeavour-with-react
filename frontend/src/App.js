@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./styles.css";
-const API_URL = "https://debian.pirate-burbot.ts.net";
+const API_URL = "https://debian.pirate-burbot.ts.net/todos";
 
 function App() {
   const [task, setTask] = useState("");
@@ -9,7 +9,7 @@ function App() {
   const [editFields, setEditFields] = useState({});
 
   useEffect(() => {
-    fetch(`${API_URL}/todos`)
+    fetch(`${API_URL}`)
       .then((res) => res.json())
       .then((data) => {
         setTasks(data);
@@ -26,7 +26,7 @@ function App() {
 
   const handleAddTask = () => {
     if (!task.trim()) return;
-    fetch(`${API_URL}/todos`, {
+    fetch(`${API_URL}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text: task }),
@@ -43,7 +43,7 @@ function App() {
   };
 
   const handleDelete = (id) => {
-    fetch(`${API_URL}/todos/${id}`, {
+    fetch(`${API_URL}/${id}`, {
       method: "DELETE",
     }).then(() => {
       setTasks((prev) => prev.filter((task) => task.id !== id));
@@ -62,7 +62,7 @@ function App() {
       [field]: value,
     };
 
-    fetch(`${API_URL}/todos/${id}`, {
+    fetch(`${API_URL}/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updated),
@@ -73,7 +73,7 @@ function App() {
     });
   };
 
-  //  Handle completed checkbox toggle
+  // New: Handle completed checkbox toggle
   const handleCompletedChange = (id, completed) => {
     const taskToUpdate = tasks.find((t) => t.id === id);
     if (!taskToUpdate) return;
@@ -83,7 +83,7 @@ function App() {
       completed,
     };
 
-    fetch(`${API_URL}/todos/${id}`, {
+    fetch(`${API_URL}/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedTask),
