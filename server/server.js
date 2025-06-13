@@ -6,12 +6,21 @@ const app = express();
 const PORT = 5000;
 
 // CORS options to allow only your GitHub Pages frontend
-const corsOptions = {
-  origin: "https://mrdruv.github.io",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  optionsSuccessStatus: 200, // For legacy browsers
-};
+app.use((req, res, next) => {
+  res.setHeader("Content-Type", "application/json");
+  res.setHeader("Access-Control-Allow-Origin", "*"); // or your frontend origin instead of *
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") {
+    res.status(200).end();
+    return;
+  }
+  next();
+});
 
 app.use(cors(corsOptions));
 app.use(express.json()); // Parses JSON body
