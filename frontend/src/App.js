@@ -11,7 +11,13 @@ function App() {
 
   useEffect(() => {
     fetch(`${API_URL}/todos`)
-      .then((res) => res.json())
+      .then((res) => {
+        const contentType = res.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Expected JSON response, got " + contentType);
+        }
+        return res.json();
+      })
       .then((data) => {
         console.log("Fetched tasks:", data);
         setTasks(data);
@@ -23,6 +29,9 @@ function App() {
           };
         });
         setEditFields(fieldState);
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
       });
   }, []);
 
