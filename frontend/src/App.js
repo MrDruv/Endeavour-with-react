@@ -1,13 +1,19 @@
 import { useState, useEffect } from "react";
 import "./styles.css";
-const API_URL =
-  "https://c3bb-2409-408c-bec2-29bb-4207-389b-14a-f3ef.ngrok-free.app/todos";
+const API_URL = "https://amiable-hope.up.railway.app/todos";
 
 function App() {
   const [task, setTask] = useState("");
   const [tasks, setTasks] = useState([]);
   const [expandedTaskId, setExpandedTaskId] = useState(null);
   const [editFields, setEditFields] = useState({});
+
+  useEffect(() => {
+    fetch("https://amiable-hope.up.railway.app/todos")
+      .then((res) => res.json())
+      .then(console.log)
+      .catch(console.error);
+  }, []);
 
   useEffect(() => {
     fetch(`${API_URL}`)
