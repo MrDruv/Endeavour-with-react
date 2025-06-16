@@ -10,12 +10,19 @@ function App() {
   const [editFields, setEditFields] = useState({});
 
   useEffect(() => {
-    fetch(
-      "https://0bf2-2409-408c-be82-fb0c-9c95-a0e9-6c18-b33c.ngrok-free.app/todos"
-    )
-      .then((res) => res.json())
-      .then(console.log)
-      .catch(console.error);
+    fetch("https://your-backend-url/todos")
+      .then((res) => {
+        console.log("Response content-type:", res.headers.get("content-type"));
+        return res.text(); // Read raw response body as text
+      })
+      .then((text) => {
+        console.log("Raw response body:", text);
+        const json = JSON.parse(text); // Try parsing JSON here
+        console.log("Parsed JSON:", json);
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+      });
   }, []);
 
   useEffect(() => {
