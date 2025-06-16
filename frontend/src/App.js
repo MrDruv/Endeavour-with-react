@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./styles.css";
-const API_URL = "https://amiable-hope.up.railway.app/todos";
+const API_URL =
+  "https://0bf2-2409-408c-be82-fb0c-9c95-a0e9-6c18-b33c.ngrok-free.app/todos";
 
 function App() {
   const [task, setTask] = useState("");
@@ -9,7 +10,9 @@ function App() {
   const [editFields, setEditFields] = useState({});
 
   useEffect(() => {
-    fetch("https://amiable-hope.up.railway.app/todos")
+    fetch(
+      "https://0bf2-2409-408c-be82-fb0c-9c95-a0e9-6c18-b33c.ngrok-free.app/todos"
+    )
       .then((res) => res.json())
       .then(console.log)
       .catch(console.error);
