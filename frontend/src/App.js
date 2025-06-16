@@ -21,7 +21,7 @@ function App() {
         if (!contentType || !contentType.includes("application/json")) {
           throw new Error("Expected JSON response, got " + contentType);
         }
-        return res.json();
+        return res.JSON.parse(json);
       })
       .then((data) => {
         console.log("Fetched tasks:", data);
