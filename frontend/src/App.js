@@ -13,6 +13,7 @@ function App() {
     fetch(`${API_URL}/todos`)
       .then((res) => {
         const contentType = res.headers.get("content-type");
+        console.log("Fetching from URL:", `${API_URL}/todos`);
         if (!contentType || !contentType.includes("application/json")) {
           throw new Error("Expected JSON response, got " + contentType);
         }
