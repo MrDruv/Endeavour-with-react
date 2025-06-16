@@ -5,7 +5,7 @@ const cors = require("cors");
 const app = express();
 const PORT = 5000;
 
-// ✅ Use CORS middleware with specific origin
+// Use CORS middleware with specific origin
 app.use(
   cors({
     origin: "https://mrdruv.github.io", // your GitHub Pages frontend
@@ -16,6 +16,11 @@ app.use(
 
 // JSON body parser
 app.use(express.json());
+
+app.use((req, res, next) => {
+  console.log(`[${req.method}] ${req.url}`);
+  next();
+});
 
 // Your routes
 app.use("/todos", todoRoutes);
@@ -29,4 +34,4 @@ app.use((req, res) => {
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
-console.log("🚀 Backend is starting...");
+console.log("Backend is starting...");
