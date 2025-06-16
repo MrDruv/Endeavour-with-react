@@ -10,7 +10,7 @@ app.use(
   cors({
     origin: "https://mrdruv.github.io", // your GitHub Pages frontend
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type"],
+    allowedHeaders: ["Content-Type", "Accept"],
   })
 );
 
