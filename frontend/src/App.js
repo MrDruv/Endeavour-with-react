@@ -13,6 +13,7 @@ function App() {
     fetch(`${API_URL}`)
       .then((res) => res.json())
       .then((data) => {
+        console.log("Fetched tasks:", data);
         setTasks(data);
         const fieldState = {};
         data.forEach((task) => {
