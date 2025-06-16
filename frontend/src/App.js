@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import "./styles.css";
-import { json } from "express";
 const API_URL =
   "https://8dda-2409-408c-be82-fb0c-9c95-a0e9-6c18-b33c.ngrok-free.app/todos";
 
