@@ -14,18 +14,18 @@ app.use(
   })
 );
 
-// ✅ JSON body parser
+// JSON body parser
 app.use(express.json());
 
-// ✅ Your routes
+// Your routes
 app.use("/todos", todoRoutes);
 
-// ✅ Catch-all 404
+// Catch-all 404
 app.use((req, res) => {
   res.status(404).json({ error: "Not Found" });
 });
 
-// ✅ Listen on all interfaces
+//Listen on all interfaces
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
