@@ -10,7 +10,7 @@ function App() {
   const [editFields, setEditFields] = useState({});
 
   useEffect(() => {
-    fetch(`${API_URL}/todos/${id}`, {
+    fetch(`${API_URL}/todos`, {
       headers: {
         Accept: "application/json",
       },
