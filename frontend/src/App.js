@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./styles.css";
 const API_URL =
-  "https://8dda-2409-408c-be82-fb0c-9c95-a0e9-6c18-b33c.ngrok-free.app/todos";
+  "https://8dda-2409-408c-be82-fb0c-9c95-a0e9-6c18-b33c.ngrok-free.app";
 
 function App() {
   const [task, setTask] = useState("");
@@ -10,14 +10,10 @@ function App() {
   const [editFields, setEditFields] = useState({});
 
   useEffect(() => {
-    fetch(`${API_URL}`)
-      .then(async (res) => {
-        const raw = await res.text();
-        console.log("🚨 Raw response from backend:", raw);
-        return JSON.parse(raw); // this will throw if it's not valid JSON
-      })
+    fetch(`${API_URL}/api/todos`)
+      .then((res) => res.json())
       .then((data) => {
-        console.log("✅ Parsed JSON:", data);
+        console.log("Fetched tasks:", data);
         setTasks(data);
         const fieldState = {};
         data.forEach((task) => {
@@ -27,13 +23,12 @@ function App() {
           };
         });
         setEditFields(fieldState);
-      })
-      .catch((err) => console.error("❌ Fetch error:", err));
+      });
   }, []);
 
   const handleAddTask = () => {
     if (!task.trim()) return;
-    fetch(`${API_URL}`, {
+    fetch(`${API_URL}/todos`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text: task }),
@@ -50,7 +45,7 @@ function App() {
   };
 
   const handleDelete = (id) => {
-    fetch(`${API_URL}/${id}`, {
+    fetch(`${API_URL}/todos/${id}`, {
       method: "DELETE",
     }).then(() => {
       setTasks((prev) => prev.filter((task) => task.id !== id));
@@ -69,7 +64,7 @@ function App() {
       [field]: value,
     };
 
-    fetch(`${API_URL}/${id}`, {
+    fetch(`${API_URL}/todos/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updated),
@@ -90,7 +85,7 @@ function App() {
       completed,
     };
 
-    fetch(`${API_URL}/${id}`, {
+    fetch(`${API_URL}/todos/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedTask),
