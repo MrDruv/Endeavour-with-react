@@ -9,21 +9,28 @@ function App() {
   const [expandedTaskId, setExpandedTaskId] = useState(null);
   const [editFields, setEditFields] = useState({});
 
-  useEffect(() => {
-    fetch(`${API_URL}`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Fetched tasks:", data);
-        setTasks(data);
-        const fieldState = {};
-        data.forEach((task) => {
-          fieldState[task.id] = {
-            due_date: task.due_date ? task.due_date.slice(0, 10) : "",
-            notes: task.notes || "",
-          };
-        });
-        setEditFields(fieldState);
+ useEffect(() => {
+  fetch(`${API_URL}`)
+    .then(async (res) => {
+      const raw = await res.text();
+      console.log("🚨 Raw response from backend:", raw);
+      return JSON.parse(raw); // this will throw if it's not valid JSON
+    })
+    .then((data) => {
+      console.log("✅ Parsed JSON:", data);
+      setTasks(data);
+      const fieldState = {};
+      data.forEach((task) => {
+        fieldState[task.id] = {
+          due_date: task.due_date ? task.due_date.slice(0, 10) : "",
+          notes: task.notes || "",
+        };
       });
+      setEditFields(fieldState);
+    })
+    .catch((err) => console.error("❌ Fetch error:", err));
+}, []);
+
   }, []);
 
   const handleAddTask = () => {
