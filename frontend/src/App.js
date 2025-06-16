@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./styles.css";
 const API_URL =
-  " https://8dda-2409-408c-be82-fb0c-9c95-a0e9-6c18-b33c.ngrok-free.app";
+  "https://8dda-2409-408c-be82-fb0c-9c95-a0e9-6c18-b33c.ngrok-free.app/todos";
 
 function App() {
   const [task, setTask] = useState("");
@@ -10,7 +10,9 @@ function App() {
   const [editFields, setEditFields] = useState({});
 
   useEffect(() => {
-    fetch("https://your-backend-url/todos")
+    fetch(
+      "https://8dda-2409-408c-be82-fb0c-9c95-a0e9-6c18-b33c.ngrok-free.app/todos"
+    )
       .then((res) => {
         console.log("Response content-type:", res.headers.get("content-type"));
         return res.text(); // Read raw response body as text
