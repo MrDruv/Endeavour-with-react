@@ -4,6 +4,8 @@ const cors = require("cors");
 const app = express();
 const PORT = 5000;
 
+app.use(cors());
+
 app.use((req, res, next) => {
   res.setHeader("Content-Type", "application/json");
   res.setHeader("Access-Control-Allow-Origin", "https://mrdruv.github.io"); // Use your frontend origin
@@ -20,12 +22,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(
-  cors({
-    origin:
-      "https://c3bb-2409-408c-bec2-29bb-4207-389b-14a-f3ef.ngrok-free.app/todos",
-  })
-);
 app.use(express.json()); // Parses JSON body
 
 // Routes
