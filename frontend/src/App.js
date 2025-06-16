@@ -20,7 +20,7 @@ function App() {
       })
       .then((text) => {
         console.log("Raw response body:", text);
-        const json = JSON.parse(json); // Try parsing JSON here
+        const json = JSON.parse(text); // Try parsing JSON here
         console.log("Parsed JSON:", json);
       })
       .catch((err) => {
