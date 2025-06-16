@@ -1,37 +1,31 @@
 const express = require("express");
 const todoRoutes = require("./routes/todoRoutes");
 const cors = require("cors");
+
 const app = express();
 const PORT = 5000;
 
-app.use(cors());
+// ✅ Use CORS middleware with specific origin
+app.use(
+  cors({
+    origin: "https://mrdruv.github.io", // your GitHub Pages frontend
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type"],
+  })
+);
 
-app.use((req, res, next) => {
-  res.setHeader("Content-Type", "application/json");
-  res.setHeader("Access-Control-Allow-Origin", "https://mrdruv.github.io"); // Use your frontend origin
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
-  );
-  res.setHeader("Access-Control-Allow-Headers", "application.json");
+// ✅ JSON body parser
+app.use(express.json());
 
-  if (req.method === "OPTIONS") {
-    res.status(200).end();
-    return;
-  }
-  next();
-});
-
-app.use(express.json()); // Parses JSON body
-
-// Routes
+// ✅ Your routes
 app.use("/todos", todoRoutes);
 
-// 404 handler
+// ✅ Catch-all 404
 app.use((req, res) => {
   res.status(404).json({ error: "Not Found" });
 });
 
+// ✅ Listen on all interfaces
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
