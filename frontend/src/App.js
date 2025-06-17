@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./styles.css";
 const API_URL =
-  "https://a7cb-2409-408c-be82-fb0c-9c95-a0e9-6c18-b33c.ngrok-free.app";
+  "https://780b-2409-408c-be82-fb0c-9c95-a0e9-6c18-b33c.ngrok-free.app";
 
 function App() {
   const [task, setTask] = useState("");
@@ -10,34 +10,22 @@ function App() {
   const [editFields, setEditFields] = useState({});
 
   useEffect(() => {
-    const fetchTodos = async () => {
-      try {
-        const response = await fetch(`${API_URL}/todos`, {
-          headers: {
-            Accept: "application/json",
-          },
-        });
-
-        const contentType = response.headers.get("content-type");
-        console.log("🔍 Response Content-Type:", contentType);
-
+    fetch(`${API_URL}/todos`, {
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then((res) => {
+        const contentType = res.headers.get("content-type");
+        console.log("Fetching from URL:", `${API_URL}/todos`);
         if (!contentType || !contentType.includes("application/json")) {
-          const text = await response.text();
-          console.warn("❌ Expected JSON but got HTML/text instead:");
-          console.log(
-            "---- HTML RESPONSE START ----\n",
-            text,
-            "\n---- HTML RESPONSE END ----"
-          );
-          throw new Error("Server did not return JSON.");
+          throw new Error("Expected JSON response, got " + contentType);
         }
-
-        const data = await response.json();
-        console.log("✅ Fetched JSON data:", data);
-
+        return res.json();
+      })
+      .then((data) => {
+        console.log("Fetched tasks:", data);
         setTasks(data);
-
-        // Setup edit fields for UI
         const fieldState = {};
         data.forEach((task) => {
           fieldState[task.id] = {
@@ -46,12 +34,10 @@ function App() {
           };
         });
         setEditFields(fieldState);
-      } catch (err) {
-        console.error("💥 Fetch error:", err);
-      }
-    };
-
-    fetchTodos();
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+      });
   }, []);
 
   const handleAddTask = () => {
