@@ -17,9 +17,14 @@ app.use(
 // JSON body parser
 app.use(express.json());
 
-app.use((req, res, next) => {
-  console.log(`[${req.method}] ${req.url}`);
+app.use("/todos", (req, res, next) => {
+  console.log(`[ROUTE] Matched /todos → ${req.method} ${req.url}`);
   next();
+});
+
+app.use((req, res) => {
+  console.warn(`[404] No route matched: ${req.method} ${req.url}`);
+  res.status(404).json({ error: "Not Found" });
 });
 
 // Your routes

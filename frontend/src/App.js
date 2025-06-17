@@ -10,22 +10,34 @@ function App() {
   const [editFields, setEditFields] = useState({});
 
   useEffect(() => {
-    fetch(`${API_URL}/todos`, {
-      headers: {
-        Accept: "application/json",
-      },
-    })
-      .then((res) => {
-        const contentType = res.headers.get("content-type");
-        console.log("Fetching from URL:", `${API_URL}/todos`);
+    const fetchTodos = async () => {
+      try {
+        const response = await fetch(`${API_URL}/todos`, {
+          headers: {
+            Accept: "application/json",
+          },
+        });
+
+        const contentType = response.headers.get("content-type");
+        console.log("🔍 Response Content-Type:", contentType);
+
         if (!contentType || !contentType.includes("application/json")) {
-          throw new Error("Expected JSON response, got " + contentType);
+          const text = await response.text();
+          console.warn("❌ Expected JSON but got HTML/text instead:");
+          console.log(
+            "---- HTML RESPONSE START ----\n",
+            text,
+            "\n---- HTML RESPONSE END ----"
+          );
+          throw new Error("Server did not return JSON.");
         }
-        return res.json();
-      })
-      .then((data) => {
-        console.log("Fetched tasks:", data);
+
+        const data = await response.json();
+        console.log("✅ Fetched JSON data:", data);
+
         setTasks(data);
+
+        // Setup edit fields for UI
         const fieldState = {};
         data.forEach((task) => {
           fieldState[task.id] = {
@@ -34,10 +46,12 @@ function App() {
           };
         });
         setEditFields(fieldState);
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-      });
+      } catch (err) {
+        console.error("💥 Fetch error:", err);
+      }
+    };
+
+    fetchTodos();
   }, []);
 
   const handleAddTask = () => {
