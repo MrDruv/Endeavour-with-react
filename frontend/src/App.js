@@ -78,7 +78,7 @@ function App() {
     };
 
     fetch(`${API_URL}/todos/${id}`, {
-      method: "PUT",
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updated),
     }).then(() => {
@@ -99,7 +99,7 @@ function App() {
     };
 
     fetch(`${API_URL}/todos/${id}`, {
-      method: "PUT",
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedTask),
     })
