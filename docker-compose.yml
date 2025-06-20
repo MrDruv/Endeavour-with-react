@@ -13,15 +13,15 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-backend:
-  build: .
-  restart: always
-  depends_on:
-    - postgres
-  ports:
-    - "3000:3000"
-  environment:
-    DATABASE_URL: postgres://wyz:8055@postgres:5432/todo_db
+  backend:
+    build: ./nestjs-server
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgres://wyz:8055@postgres:5432/todo_db
 
 volumes:
   pgdata:
