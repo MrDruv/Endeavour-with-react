@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./styles.css";
-const API_URL = "";
+const API_URL = "endeavour-with-react-production.up.railway.app";
 
 function App() {
   const [task, setTask] = useState("");
