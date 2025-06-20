@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./styles.css";
-const API_URL = "https://mrdruv.github.io/Endeavour-with-react/";
+const API_URL = "https://mrdruv.github.io/Endeavour-with-react";
 
 function App() {
   const [task, setTask] = useState("");
