@@ -71,10 +71,20 @@ function App() {
   };
 
   const handleFieldBlur = (id, field, value) => {
+    let finalValue = value;
+
+    if (field === "due_date" && value) {
+      try {
+        finalValue = new Date(value).toISOString();
+      } catch (e) {
+        console.error("Invalid date format:", value);
+      }
+    }
+
     const updated = {
       ...tasks.find((t) => t.id === id),
       ...editFields[id],
-      [field]: value,
+      [field]: finalValue,
     };
 
     fetch(`${API_URL}/todos/${id}`, {
@@ -83,7 +93,7 @@ function App() {
       body: JSON.stringify(updated),
     }).then(() => {
       setTasks((prev) =>
-        prev.map((t) => (t.id === id ? { ...t, [field]: value } : t))
+        prev.map((t) => (t.id === id ? { ...t, [field]: finalValue } : t))
       );
     });
   };
