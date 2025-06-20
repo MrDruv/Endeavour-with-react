@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: wyz
+      POSTGRES_PASSWORD: 8055
+      POSTGRES_DB: todo_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+backend:
+  build: .
+  restart: always
+  depends_on:
+    - postgres
+  ports:
+    - "3000:3000"
+  environment:
+    DATABASE_URL: postgres://wyz:8055@postgres:5432/todo_db
+
+volumes:
+  pgdata:
