@@ -81,9 +81,8 @@ function App() {
       }
     }
 
+    // Only send the updated field
     const updated = {
-      ...tasks.find((t) => t.id === id),
-      ...editFields[id],
       [field]: finalValue,
     };
 
