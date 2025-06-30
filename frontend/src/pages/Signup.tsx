@@ -1,4 +1,5 @@
 // src/pages/Signup.tsx
+import React from "react";
 import { useState } from "react";
 
 function Signup() {
@@ -8,11 +9,14 @@ function Signup() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch("https://your-backend-url.com/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const res = await fetch(
+        "https://endeavour-with-react-production.up.railway.app/auth/signup",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       const data = await res.json();
       console.log("Signup success:", data);

@@ -1,16 +1,14 @@
-//import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// ✅ Use this for GitHub Pages:
+// src/Router.tsx
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
-
-import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import App from "./App"; 
 
-function App() {
+function AppRoutes() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<App />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>
@@ -18,4 +16,4 @@ function App() {
   );
 }
 
-export default App;
+export default AppRoutes;
