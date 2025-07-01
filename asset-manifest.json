@@ -1,13 +1,10 @@
 {
   "files": {
-    "main.css": "/Endeavour-with-react/static/css/main.6bd1f065.css",
-    "main.js": "/Endeavour-with-react/static/js/main.1051f35a.js",
+    "main.js": "/Endeavour-with-react/static/js/main.3b07233c.js",
     "index.html": "/Endeavour-with-react/index.html",
-    "main.6bd1f065.css.map": "/Endeavour-with-react/static/css/main.6bd1f065.css.map",
-    "main.1051f35a.js.map": "/Endeavour-with-react/static/js/main.1051f35a.js.map"
+    "main.3b07233c.js.map": "/Endeavour-with-react/static/js/main.3b07233c.js.map"
   },
   "entrypoints": [
-    "static/css/main.6bd1f065.css",
-    "static/js/main.1051f35a.js"
+    "static/js/main.3b07233c.js"
   ]
 }
