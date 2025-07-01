@@ -21,4 +21,17 @@ export class AuthService {
     const token = this.jwtService.sign({ sub: user.id, email: user.email });
     return { access_token: token };
   }
+  async signup(email: string, password: string) {
+    const existing = await this.prisma.user.findUnique({ where: { email } });
+    if (existing) throw new Error('User already exists');
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await this.prisma.user.create({
+      data: { email, password: hashedPassword },
+    });
+
+    const token = this.jwtService.sign({ sub: user.id, email: user.email });
+    return { access_token: token };
+  }
 }

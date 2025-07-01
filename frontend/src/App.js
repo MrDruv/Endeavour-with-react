@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./styles.css";
 const API_URL = "https://endeavour-with-react-production.up.railway.app";
+const token = localStorage.getItem("token");
 
 function App() {
   const [task, setTask] = useState("");
@@ -12,6 +13,7 @@ function App() {
     fetch(`${API_URL}/todos`, {
       headers: {
         Accept: "application/json",
+        Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => {
@@ -43,7 +45,10 @@ function App() {
     if (!task.trim()) return;
     fetch(`${API_URL}/todos`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ text: task }),
     })
       .then((res) => res.json())
@@ -60,6 +65,9 @@ function App() {
   const handleDelete = (id) => {
     fetch(`${API_URL}/todos/${id}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     }).then(() => {
       setTasks((prev) => prev.filter((task) => task.id !== id));
       setEditFields((prev) => {
@@ -88,7 +96,10 @@ function App() {
 
     fetch(`${API_URL}/todos/${id}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(updated),
     }).then(() => {
       setTasks((prev) =>
@@ -109,7 +120,10 @@ function App() {
 
     fetch(`${API_URL}/todos/${id}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(updatedTask),
     })
       .then((res) => res.json())
