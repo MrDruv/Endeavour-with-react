@@ -2,18 +2,19 @@ import { useState, useEffect } from "react";
 
 import "./styles.css";
 const API_URL = "https://endeavour-with-react-production.up.railway.app";
-const [token, setToken] = useState(localStorage.getItem("token"));
-useEffect(() => {
-  const syncToken = () => setToken(localStorage.getItem("token"));
-  window.addEventListener("storage", syncToken);
-  return () => window.removeEventListener("storage", syncToken);
-}, []);
 
 function App() {
   const [task, setTask] = useState("");
   const [tasks, setTasks] = useState([]);
   const [expandedTaskId, setExpandedTaskId] = useState(null);
   const [editFields, setEditFields] = useState({});
+  const [token, setToken] = useState(localStorage.getItem("token"));
+
+  useEffect(() => {
+    const syncToken = () => setToken(localStorage.getItem("token"));
+    window.addEventListener("storage", syncToken);
+    return () => window.removeEventListener("storage", syncToken);
+  }, []);
 
   useEffect(() => {
     fetch(`${API_URL}/todos`, {
