@@ -153,7 +153,7 @@ function App() {
           <button
             onClick={() => {
               localStorage.removeItem("token");
-              window.location.replace(`${window.location.origin}/#/login`);
+              window.location.replace(`#/login`);
             }}
             style={{
               margin: "1rem",
