@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const API_URL = "https://endeavour-with-react-production.up.railway.app";
 function Signup() {
@@ -46,7 +47,7 @@ function Signup() {
         <button type="submit">Sign Up</button>
       </form>
       <p>
-        Already have an account? <Link to="/login">Login</Link>
+        Already have an account? <Link to="/Login">Login</Link>
       </p>
     </div>
   );
