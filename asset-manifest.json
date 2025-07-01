@@ -1,15 +1,13 @@
 {
   "files": {
-    "main.css": "/Endeavour-with-react/static/css/main.6321cc68.css",
-    "main.js": "/Endeavour-with-react/static/js/main.1e89a0a0.js",
-    "static/js/453.8ab44547.chunk.js": "/Endeavour-with-react/static/js/453.8ab44547.chunk.js",
+    "main.css": "/Endeavour-with-react/static/css/main.6bd1f065.css",
+    "main.js": "/Endeavour-with-react/static/js/main.e56747e0.js",
     "index.html": "/Endeavour-with-react/index.html",
-    "main.6321cc68.css.map": "/Endeavour-with-react/static/css/main.6321cc68.css.map",
-    "main.1e89a0a0.js.map": "/Endeavour-with-react/static/js/main.1e89a0a0.js.map",
-    "453.8ab44547.chunk.js.map": "/Endeavour-with-react/static/js/453.8ab44547.chunk.js.map"
+    "main.6bd1f065.css.map": "/Endeavour-with-react/static/css/main.6bd1f065.css.map",
+    "main.e56747e0.js.map": "/Endeavour-with-react/static/js/main.e56747e0.js.map"
   },
   "entrypoints": [
-    "static/css/main.6321cc68.css",
-    "static/js/main.1e89a0a0.js"
+    "static/css/main.6bd1f065.css",
+    "static/js/main.e56747e0.js"
   ]
 }
