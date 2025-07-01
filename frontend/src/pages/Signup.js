@@ -16,15 +16,15 @@ function Signup() {
 
     try {
       // Replace with your actual API endpoint
-      const res = await fetch(`${API_URL}/api/signup`, {
+      const res = await fetch(`${API_URL}/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
-      if (res.ok && data.token) {
-        localStorage.setItem("token", data.token);
+      if (res.ok && data.access_token) {
+        localStorage.setItem("token", data.access_token);
         navigate("/");
       } else {
         setError(data.message || "Signup failed");
@@ -58,6 +58,19 @@ function Signup() {
         <br />
         <button type="submit">Signup</button>
       </form>
+      <p>
+        Already have an account?{" "}
+        <span
+          onClick={() => navigate("/login")}
+          style={{
+            color: "blue",
+            textDecoration: "underline",
+            cursor: "pointer",
+          }}
+        >
+          Login
+        </span>
+      </p>
     </div>
   );
 }

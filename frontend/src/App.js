@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import "./styles.css";
 const API_URL = "https://endeavour-with-react-production.up.railway.app";
 const token = localStorage.getItem("token");
@@ -141,6 +142,27 @@ function App() {
 
   return (
     <div className="app-container">
+      {token && (
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <button
+            onClick={() => {
+              localStorage.removeItem("token");
+              window.location.href = "/login";
+            }}
+            style={{
+              margin: "1rem",
+              padding: "0.5rem 1rem",
+              background: "#ff5252",
+              border: "none",
+              color: "white",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            Logout
+          </button>
+        </div>
+      )}
       <input
         id="taskInput"
         type="text"
@@ -149,6 +171,7 @@ function App() {
         onChange={(e) => setTask(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleAddTask()}
       />
+
       <ul className="task-list">
         {tasks.map((task) => (
           <li key={task.id} className="task-item">
