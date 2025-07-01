@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
 const API_URL = "https://endeavour-with-react-production.up.railway.app";
 function Signup() {
   const [email, setEmail] = useState("");
@@ -36,40 +37,16 @@ function Signup() {
   };
 
   return (
-    <div>
-      <h2>Signup</h2>
-      {error && <p style={{ color: "crimson" }}>{error}</p>}
+    <div className="signup-container">
+      <h2>Create an Account</h2>
       <form onSubmit={handleSignup}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <br />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <br />
-        <button type="submit">Signup</button>
+        <input type="text" placeholder="Name" required />
+        <input type="email" placeholder="Email" required />
+        <input type="password" placeholder="Password" required />
+        <button type="submit">Sign Up</button>
       </form>
       <p>
-        Already have an account?{" "}
-        <span
-          onClick={() => navigate("/login")}
-          style={{
-            color: "blue",
-            textDecoration: "underline",
-            cursor: "pointer",
-          }}
-        >
-          Login
-        </span>
+        Already have an account? <Link to="/login">Login</Link>
       </p>
     </div>
   );

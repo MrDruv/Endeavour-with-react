@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import "./styles.css";
 
 const API_URL = "https://endeavour-with-react-production.up.railway.app";
 
@@ -39,7 +40,7 @@ function Login() {
   };
 
   return (
-    <div>
+    <div class="input-container">
       <h2>Login</h2>
       {error && <p style={{ color: "crimson" }}>{error}</p>}
       <form onSubmit={handleLogin}>
