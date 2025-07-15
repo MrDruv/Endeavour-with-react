@@ -1,4 +1,5 @@
 // src/Router.tsx
+import useStore from "./store";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login.js";
 import Signup from "./pages/Signup.js";
@@ -6,10 +7,9 @@ import App from "./App";
 import { Navigate } from "react-router-dom";
 
 const PrivateRoute = ({ children }) => {
-  const token = localStorage.getItem("token");
+  const token = useStore((state) => state.token);
   return token ? children : <Navigate to="/login" />;
 };
-
 function AppRoutes() {
   return (
     <Router>
