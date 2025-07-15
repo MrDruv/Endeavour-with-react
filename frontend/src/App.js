@@ -1,20 +1,29 @@
-import { useState, useEffect } from "react";
+//App.js
+import useStore from "./store";
+import { useEffect } from "react";
 
 import "./styles.css";
 const API_URL = "https://endeavour-with-react-production.up.railway.app";
 
 function App() {
-  const [task, setTask] = useState("");
-  const [tasks, setTasks] = useState([]);
-  const [expandedTaskId, setExpandedTaskId] = useState(null);
-  const [editFields, setEditFields] = useState({});
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const {
+    task,
+    setTask,
+    tasks,
+    setTasks,
+    expandedTaskId,
+    setExpandedTaskId,
+    editFields,
+    setEditFields,
+    token,
+    setToken,
+  } = useStore();
 
   useEffect(() => {
     const syncToken = () => setToken(localStorage.getItem("token"));
     window.addEventListener("storage", syncToken);
     return () => window.removeEventListener("storage", syncToken);
-  }, []);
+  }, [setToken]);
 
   useEffect(() => {
     fetch(`${API_URL}/todos`, {
@@ -46,7 +55,7 @@ function App() {
       .catch((err) => {
         console.error("Fetch error:", err);
       });
-  }, []);
+  }, [setTasks, setEditFields, token]);
 
   const handleAddTask = () => {
     if (!task.trim()) return;

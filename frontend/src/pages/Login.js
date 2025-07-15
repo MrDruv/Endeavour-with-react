@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import useStore from "../store";
+import { useNavigate, Link } from "react-router-dom";
+import { useEffect } from "react";
 import "./styles.css";
 
 const API_URL = "https://endeavour-with-react-production.up.railway.app";
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const { email, setEmail, password, setPassword, error, setError, setToken } =
+    useStore();
+
   const navigate = useNavigate();
+
   useEffect(() => {
     if (localStorage.getItem("token")) {
       navigate("/");
@@ -29,6 +30,7 @@ function Login() {
       const data = await res.json();
       if (res.ok && data.access_token) {
         localStorage.setItem("token", data.access_token);
+        setToken(data.access_token);
         navigate("/");
       } else {
         setError(data.message || "Login failed");
@@ -40,7 +42,7 @@ function Login() {
   };
 
   return (
-    <div class="input-container">
+    <div className="auth-container">
       <h2>Login</h2>
       {error && <p style={{ color: "crimson" }}>{error}</p>}
       <form onSubmit={handleLogin}>
