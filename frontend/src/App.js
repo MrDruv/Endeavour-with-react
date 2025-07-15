@@ -1,149 +1,149 @@
-import { useState, useEffect } from "react";
-
+//App.js
+import useStore from "./store";
+import { useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import "./styles.css";
 const API_URL = "https://endeavour-with-react-production.up.railway.app";
 
 function App() {
-  const [task, setTask] = useState("");
-  const [tasks, setTasks] = useState([]);
-  const [expandedTaskId, setExpandedTaskId] = useState(null);
-  const [editFields, setEditFields] = useState({});
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const queryClient = useQueryClient();
+  const {
+    task,
+    setTask,
+    setTasks,
+    expandedTaskId,
+    setExpandedTaskId,
+    editFields,
+    setEditFields,
+    token,
+    setToken,
+  } = useStore();
 
   useEffect(() => {
     const syncToken = () => setToken(localStorage.getItem("token"));
     window.addEventListener("storage", syncToken);
     return () => window.removeEventListener("storage", syncToken);
-  }, []);
+  }, [setToken]);
 
-  useEffect(() => {
-    fetch(`${API_URL}/todos`, {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        const contentType = res.headers.get("content-type");
-        console.log("Fetching from URL:", `${API_URL}/todos`);
-        if (!contentType || !contentType.includes("application/json")) {
-          throw new Error("Expected JSON response, got " + contentType);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        console.log("Fetched tasks:", data);
-        setTasks(data);
-        const fieldState = {};
-        data.forEach((task) => {
-          fieldState[task.id] = {
-            due_date: task.due_date ? task.due_date.slice(0, 10) : "",
-            notes: task.notes || "",
-          };
-        });
-        setEditFields(fieldState);
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
+  const fetchTasks = async () => {
+    const res = await fetch(`${API_URL}/todos`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error("Failed to fetch tasks");
+    return res.json();
+  };
+
+  const {
+    data: tasksData,
+    // isLoading,
+    // error,
+  } = useQuery({
+    queryKey: ["todos"],
+    queryFn: fetchTasks,
+    enabled: !!token,
+    onSuccess: (data) => {
+      setTasks(data);
+      const fieldState = {};
+      data.forEach((task) => {
+        fieldState[task.id] = {
+          due_date: task.due_date?.slice(0, 10) || "",
+          notes: task.notes || "",
+        };
       });
-  }, []);
+      setEditFields(fieldState);
+    },
+  });
+
+  const Tasks = tasksData || [];
+  const toggleDetails = (id) => {
+    setExpandedTaskId((prev) => (prev === id ? null : id));
+  };
+
+  const { mutate: addTask } = useMutation({
+    mutationFn: async (newText) => {
+      const res = await fetch(`${API_URL}/todos`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: newText }),
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+      setTask("");
+    },
+  });
 
   const handleAddTask = () => {
     if (!task.trim()) return;
-    fetch(`${API_URL}/todos`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ text: task }),
-    })
-      .then((res) => res.json())
-      .then((newTask) => {
-        setTasks((prev) => [...prev, newTask]);
-        setEditFields((prev) => ({
-          ...prev,
-          [newTask.id]: { due_date: "", notes: "" },
-        }));
-        setTask("");
-      });
+    addTask(task);
   };
+
+  const { mutate: deleteTask } = useMutation({
+    mutationFn: async (id) => {
+      await fetch(`${API_URL}/todos/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["todos"]);
+    },
+  });
 
   const handleDelete = (id) => {
-    fetch(`${API_URL}/todos/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }).then(() => {
-      setTasks((prev) => prev.filter((task) => task.id !== id));
-      setEditFields((prev) => {
-        const copy = { ...prev };
-        delete copy[id];
-        return copy;
-      });
-    });
+    deleteTask(id);
   };
 
+  const { mutate: updateField } = useMutation({
+    mutationFn: async ({ id, field, value }) => {
+      const finalValue =
+        field === "due_date" && value ? new Date(value).toISOString() : value;
+
+      const res = await fetch(`${API_URL}/todos/${id}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ [field]: finalValue }),
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["todos"]);
+    },
+  });
+
   const handleFieldBlur = (id, field, value) => {
-    let finalValue = value;
-
-    if (field === "due_date" && value) {
-      try {
-        finalValue = new Date(value).toISOString();
-      } catch (e) {
-        console.error("Invalid date format:", value);
-      }
-    }
-
-    // Only send the updated field
-    const updated = {
-      [field]: finalValue,
-    };
-
-    fetch(`${API_URL}/todos/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(updated),
-    }).then(() => {
-      setTasks((prev) =>
-        prev.map((t) => (t.id === id ? { ...t, [field]: finalValue } : t))
-      );
-    });
+    updateField({ id, field, value });
   };
 
   // New: Handle completed checkbox toggle
-  const handleCompletedChange = (id, completed) => {
-    const taskToUpdate = tasks.find((t) => t.id === id);
-    if (!taskToUpdate) return;
-
-    const updatedTask = {
-      ...taskToUpdate,
-      completed,
-    };
-
-    fetch(`${API_URL}/todos/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(updatedTask),
-    })
-      .then((res) => res.json())
-      .then((updatedTodo) => {
-        setTasks((prev) => prev.map((t) => (t.id === id ? updatedTodo : t)));
-      })
-      .catch((err) => {
-        console.error("Failed to update completed status:", err);
+  const { mutate: updateCompleted } = useMutation({
+    mutationFn: async ({ id, completed }) => {
+      const res = await fetch(`${API_URL}/todos/${id}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ completed }),
       });
-  };
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["todos"]);
+    },
+  });
 
-  const toggleDetails = (id) => {
-    setExpandedTaskId((prev) => (prev === id ? null : id));
+  const handleCompletedChange = (id, completed) => {
+    updateCompleted({ id, completed });
   };
 
   return (
@@ -179,7 +179,7 @@ function App() {
       />
 
       <ul className="task-list">
-        {tasks.map((task) => (
+        {Tasks.map((task) => (
           <li key={task.id} className="task-item">
             <div className="task-header" onClick={() => toggleDetails(task.id)}>
               <label>
